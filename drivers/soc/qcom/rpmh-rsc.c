@@ -817,7 +817,7 @@ void rpmh_rsc_debug(struct rsc_drv *drv, struct completion *compl)
 	unsigned long accl = 0;
 	char str[20] = "";
 
-	pr_warn("RSC:%s\n", drv->name);
+	pr_err("RSC:%s\n", drv->name);
 
 	for (i = 0; i < drv->num_tcs; i++) {
 		if (!test_bit(i, drv->tcs_in_use))
@@ -832,9 +832,9 @@ void rpmh_rsc_debug(struct rsc_drv *drv, struct completion *compl)
 	}
 
 	irq_get_irqchip_state(drv->irq, IRQCHIP_STATE_PENDING, &irq_sts);
-	pr_warn("HW IRQ %lu is %s at GIC\n", rsc_irq_data->hwirq,
+	pr_err("HW IRQ %lu is %s at GIC\n", rsc_irq_data->hwirq,
 		irq_sts ? "PENDING" : "NOT PENDING");
-	pr_warn("Completion is %s to finish\n",
+	pr_err("Completion is %s to finish\n",
 		completion_done(compl) ? "PENDING" : "NOT PENDING");
 
 	for_each_set_bit(i, &accl, ARRAY_SIZE(accl_str)) {
@@ -843,10 +843,10 @@ void rpmh_rsc_debug(struct rsc_drv *drv, struct completion *compl)
 	}
 
 	if (busy && !irq_sts)
-		pr_warn("ERROR:Accelerator(s) { %s } at AOSS did not respond\n",
+		pr_err("ERROR:Accelerator(s) { %s } at AOSS did not respond\n",
 			str);
 	else if (irq_sts)
-		pr_warn("ERROR:Possible lockup in Linux\n");
+		pr_err("ERROR:Possible lockup in Linux\n");
 
 	/* Show fast path status, if the TCS is busy */
 	if (drv->tcs[FAST_PATH_TCS].num_tcs) {
